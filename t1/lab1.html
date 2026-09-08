@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Лабораторна робота 1 — Форми запису алгоритмів</title>
+<meta name="description" content="Інтерактивне практичне заняття з дисципліни «Основи програмної інженерії»: форми запису алгоритмів, псевдокод, блок-схеми, трасування, декомпозиція та перевірка алгоритмів." />
+<style>
+  :root{
+    --bg:#07111f;
+    --bg2:#0b1729;
+    --panel:rgba(14,29,49,.72);
+    --panel2:rgba(21,39,63,.88);
+    --line:rgba(155,203,255,.16);
+    --text:#edf6ff;
+    --muted:#9eb4c8;
+    --cyan:#67e8f9;
+    --blue:#60a5fa;
+    --violet:#a78bfa;
+    --green:#6ee7b7;
+    --amber:#fbbf24;
+    --red:#fb7185;
+    --shadow:0 24px 70px rgba(0,0,0,.32);
+    --radius:24px;
+    --max:1180px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 12% 0%, rgba(96,165,250,.16), transparent 30%),
+      radial-gradient(circle at 92% 12%, rgba(167,139,250,.12), transparent 30%),
+      linear-gradient(180deg,var(--bg),#07101d 48%,#091524);
+    line-height:1.62;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0; pointer-events:none; z-index:-1;
+    background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+    background-size:42px 42px;
+    mask-image:linear-gradient(to bottom,black,transparent 80%);
+  }
+  button{font:inherit}
+  .progress{
+    position:fixed;top:0;left:0;height:3px;width:0;z-index:9999;
+    background:linear-gradient(90deg,var(--cyan),var(--violet));
+    box-shadow:0 0 16px rgba(103,232,249,.6);
+  }
+  .topbar{
+    position:sticky;top:0;z-index:1000;
+    backdrop-filter:blur(14px);
+    background:rgba(5,13,24,.72);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:var(--max);margin:auto;padding:12px 20px;
+    display:flex;align-items:center;gap:14px;justify-content:space-between;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+  .brand-mark{
+    width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--cyan),var(--violet));color:#07111f;font-weight:950;
+  }
+  .nav{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+  .nav a{
+    color:var(--muted);text-decoration:none;font-size:.84rem;padding:7px 10px;border:1px solid transparent;border-radius:10px;
+  }
+  .nav a:hover,.nav a.active{color:var(--text);border-color:var(--line);background:rgba(255,255,255,.035)}
+  main{max-width:var(--max);margin:auto;padding:0 20px 100px}
+  section{scroll-margin-top:78px}
+  .hero{
+    min-height:84vh;display:grid;align-items:center;grid-template-columns:1.1fr .9fr;gap:44px;padding:70px 0 48px;
+  }
+  .eyebrow{display:inline-flex;gap:8px;align-items:center;color:var(--cyan);font-weight:800;text-transform:uppercase;letter-spacing:.12em;font-size:.76rem}
+  .eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
+  h1{
+    font-size:clamp(2.8rem,6.8vw,6.2rem);line-height:.92;letter-spacing:-.065em;margin:18px 0 22px;
+  }
+  h1 .grad{
+    background:linear-gradient(90deg,var(--cyan),var(--blue) 40%,var(--violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .lead{font-size:clamp(1.03rem,2vw,1.22rem);max-width:790px;color:#c7d8e8}
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+  .btn{
+    border:1px solid var(--line);border-radius:14px;padding:11px 15px;color:var(--text);
+    background:rgba(255,255,255,.035);cursor:pointer;text-decoration:none;transition:.2s ease;
+    display:inline-flex;align-items:center;gap:8px;font-weight:750;
+  }
+  .btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.07)}
+  .btn.primary{background:linear-gradient(135deg,rgba(103,232,249,.18),rgba(167,139,250,.2));border-color:rgba(103,232,249,.35)}
+  .hero-card{
+    border:1px solid var(--line);background:linear-gradient(180deg,rgba(18,36,58,.82),rgba(8,20,35,.82));
+    border-radius:32px;padding:26px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  }
+  .hero-card::after{
+    content:"";position:absolute;width:190px;height:190px;border-radius:50%;right:-70px;top:-90px;
+    background:radial-gradient(circle,rgba(103,232,249,.22),transparent 65%);
+  }
+  .kicker{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.1em}
+  .big-q{font-size:1.5rem;font-weight:850;line-height:1.25;margin:12px 0 18px}
+  .codebox{
+    background:#050b13;border:1px solid rgba(148,163,184,.18);border-radius:16px;padding:15px 16px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88rem;color:#c9e7ff;
+  }
+  .codebox .dim{color:#607b92}.codebox .hot{color:#8df1ff}.codebox .warn{color:#fbbf24}
+  .metric-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+  .metric{padding:12px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025)}
+  .metric b{display:block;font-size:1.1rem}.metric span{font-size:.75rem;color:var(--muted)}
+  .chapter{padding:84px 0 18px}
+  .chapter-head{display:grid;grid-template-columns:.3fr 1.7fr;gap:26px;align-items:start;margin-bottom:28px}
+  .num{
+    font-size:clamp(4rem,8vw,7.2rem);font-weight:950;line-height:.8;letter-spacing:-.08em;
+    color:transparent;-webkit-text-stroke:1px rgba(103,232,249,.45);
+  }
+  h2{font-size:clamp(2rem,4vw,3.65rem);line-height:1.02;letter-spacing:-.045em;margin:0 0 14px}
+  .subtitle{color:var(--muted);max-width:830px;font-size:1.05rem}
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .card{
+    border:1px solid var(--line);background:var(--panel);border-radius:var(--radius);padding:22px;
+    box-shadow:0 12px 40px rgba(0,0,0,.12);
+  }
+  .card h3{margin:0 0 8px;font-size:1.18rem}
+  .card p{margin:.4rem 0;color:#c6d7e6}
+  .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;font-weight:850;color:var(--cyan)}
+  .quote{
+    border-left:3px solid var(--cyan);padding:16px 20px;margin:20px 0;
+    background:linear-gradient(90deg,rgba(103,232,249,.08),transparent);border-radius:0 16px 16px 0;
+    color:#d9e7f3;font-size:1.08rem;
+  }
+  .callout{
+    padding:18px 20px;border-radius:18px;border:1px solid rgba(251,191,36,.24);
+    background:rgba(251,191,36,.07);color:#ffe8a4;
+  }
+  .interactive{
+    border:1px solid rgba(103,232,249,.23);
+    background:linear-gradient(135deg,rgba(103,232,249,.06),rgba(167,139,250,.06));
+    border-radius:28px;padding:24px;
+  }
+  .interactive h3{font-size:1.45rem;margin:0 0 8px}
+  .choice-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .choice{
+    padding:10px 13px;border-radius:12px;border:1px solid var(--line);background:#0a1727;color:var(--text);cursor:pointer;
+  }
+  .choice:hover{border-color:rgba(103,232,249,.45)}
+  .choice.selected{background:rgba(103,232,249,.12);border-color:var(--cyan)}
+  .result{
+    display:none;margin-top:16px;padding:15px 17px;border-radius:15px;background:rgba(110,231,183,.08);
+    border:1px solid rgba(110,231,183,.22);color:#cbffe9;
+  }
+  .result.show{display:block}
+  .timer-box{
+    display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid var(--line);
+    border-radius:14px;background:rgba(255,255,255,.025);margin-top:16px;
+  }
+  .timer{font-family:ui-monospace,monospace;font-size:1.25rem;font-weight:900;color:var(--cyan)}
+  .tiny{font-size:.82rem;color:var(--muted)}
+  .reveal{opacity:0;transform:translateY(18px);transition:.6s ease}
+  .reveal.visible{opacity:1;transform:none}
+  .compare{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  .form-card{
+    min-height:260px;border:1px solid var(--line);border-radius:22px;padding:20px;background:rgba(255,255,255,.025);
+    transition:.2s ease;
+  }
+  .form-card:hover{transform:translateY(-3px);border-color:rgba(103,232,249,.35)}
+  .form-icon{font-size:2rem}.form-card h3{margin:9px 0 7px}.form-card p{font-size:.9rem;color:#bed0df}
+  .bestfor{margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:.82rem;color:#d9f7ff}
+  .algorithm-box{
+    display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;
+  }
+  .step-list{display:grid;gap:9px}
+  .step{
+    padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:#091827;
+    cursor:grab;user-select:none;transition:.2s ease;
+  }
+  .step.dragging{opacity:.45;transform:scale(.98)}
+  .step .badge{
+    display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;background:rgba(103,232,249,.12);
+    color:var(--cyan);font-weight:900;margin-right:8px;
+  }
+  .flow{
+    display:grid;place-items:center;gap:12px;min-height:420px;padding:18px;border-radius:22px;border:1px solid var(--line);
+    background:rgba(255,255,255,.02);
+  }
+  .node{
+    min-width:220px;max-width:420px;text-align:center;padding:12px 18px;border:2px solid rgba(103,232,249,.38);background:#0a1726;
+  }
+  .node.start{border-radius:999px}
+  .node.process{border-radius:10px}
+  .node.io{transform:skew(-12deg);border-color:rgba(167,139,250,.5)}
+  .node.io span{display:block;transform:skew(12deg)}
+  .diamond{
+    width:150px;height:150px;display:grid;place-items:center;transform:rotate(45deg);
+    border:2px solid rgba(251,191,36,.5);background:#0a1726;border-radius:10px;
+  }
+  .diamond span{transform:rotate(-45deg);text-align:center;font-size:.9rem}
+  .arrow{font-size:1.4rem;color:var(--cyan);line-height:1}
+  .dual{
+    display:grid;grid-template-columns:1fr 1fr;gap:18px;
+  }
+  .pseudo{
+    background:#050b13;border:1px solid rgba(148,163,184,.18);border-radius:18px;padding:18px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92rem;color:#c9e7ff;overflow:auto;
+  }
+  .pseudo .kw{color:var(--violet);font-weight:800}.pseudo .var{color:var(--cyan)}.pseudo .com{color:#607b92}
+  .trace-table{width:100%;border-collapse:collapse;margin-top:12px}
+  .trace-table th,.trace-table td{padding:10px 11px;border-bottom:1px solid var(--line);text-align:center}
+  .trace-table th{background:rgba(103,232,249,.06);color:#ddf9ff}
+  .trace-table input{
+    width:82px;padding:8px;border-radius:9px;border:1px solid var(--line);background:#07131f;color:var(--text);text-align:center;
+  }
+  .scenario-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .tab{
+    padding:8px 11px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.02);
+    color:var(--muted);cursor:pointer;
+  }
+  .tab.active{color:#06121e;background:var(--cyan);border-color:var(--cyan);font-weight:900}
+  .scenario{display:none}.scenario.active{display:block}
+  .criteria{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  .crit{
+    padding:14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.02);
+  }
+  .crit strong{display:block;color:#dff8ff}.crit span{font-size:.8rem;color:var(--muted)}
+  .checklist{display:grid;gap:10px}
+  .check{
+    display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);
+    border-radius:14px;background:rgba(255,255,255,.02);
+  }
+  .check input{margin-top:4px;accent-color:#67e8f9}
+  .check.done{border-color:rgba(110,231,183,.3);background:rgba(110,231,183,.06)}
+  .quiz-q{padding:20px;border:1px solid var(--line);border-radius:20px;margin:14px 0;background:rgba(255,255,255,.025)}
+  .quiz-q h4{margin:0 0 10px;font-size:1rem}
+  .opt{
+    display:block;width:100%;text-align:left;margin:7px 0;padding:10px 12px;border:1px solid var(--line);
+    border-radius:11px;background:#081522;color:#dbe8f4;cursor:pointer;
+  }
+  .opt:hover{border-color:rgba(103,232,249,.4)}
+  .opt.correct{border-color:rgba(110,231,183,.65);background:rgba(110,231,183,.08)}
+  .opt.wrong{border-color:rgba(251,113,133,.65);background:rgba(251,113,133,.08)}
+  .quiz-score{font-size:1.5rem;font-weight:900;margin-top:16px}
+  .takeaway{font-size:clamp(1.45rem,2.6vw,2.3rem);line-height:1.15;letter-spacing:-.03em;margin:0}
+  .footer{padding:52px 0 20px;color:var(--muted);font-size:.88rem;border-top:1px solid var(--line);margin-top:70px}
+  @media(max-width:900px){
+    .hero{grid-template-columns:1fr;min-height:auto;padding-top:52px}
+    .chapter-head{grid-template-columns:1fr}
+    .compare,.criteria{grid-template-columns:1fr 1fr}
+    .algorithm-box,.dual{grid-template-columns:1fr}
+  }
+  @media(max-width:650px){
+    .nav{display:none}
+    .g2,.g3,.g4,.compare,.criteria{grid-template-columns:1fr}
+    .metric-grid{grid-template-columns:1fr}
+    h1{font-size:3.15rem}
+    .chapter{padding-top:68px}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-mark">SE</span><span>Основи програмної інженерії</span></div>
+    <nav class="nav">
+      <a href="#goal">Мета</a>
+      <a href="#forms">Форми</a>
+      <a href="#build">Побудова</a>
+      <a href="#trace">Трасування</a>
+      <a href="#practice">Практика</a>
+      <a href="#submit">Звіт</a>
+      <a href="#quiz">Перевірка</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="top">
+    <div>
+      <div class="eyebrow">Лабораторна робота 1 · 2 академічні години</div>
+      <h1>Форми запису <span class="grad">алгоритмів</span></h1>
+      <p class="lead">
+        Сильний алгоритм — це не тільки правильна послідовність дій.
+        Це ще й <strong>спосіб зробити мислення видимим</strong>: так, щоб інша людина могла
+        зрозуміти логіку, перевірити її, знайти крайові випадки та реалізувати без здогадок.
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#goal">Почати практику ↓</a>
+        <button class="btn" id="focusBtn">Режим фокусу</button>
+      </div>
+      <div class="timer-box">
+        <div>
+          <div class="tiny">Таймер вправи</div>
+          <div class="timer" id="timer">10:00</div>
+        </div>
+        <button class="btn" onclick="startTimer(300)">5 хв</button>
+        <button class="btn" onclick="startTimer(600)">10 хв</button>
+        <button class="btn" onclick="startTimer(900)">15 хв</button>
+        <button class="btn" onclick="stopTimer()">Стоп</button>
+      </div>
+    </div>
+
+    <aside class="hero-card reveal">
+      <div class="kicker">Головне питання заняття</div>
+      <div class="big-q">Чому один і той самий алгоритм варто вміти записати кількома способами?</div>
+      <div class="codebox">
+        <span class="dim">// одна задача</span><br>
+        input → process → decision → output<br><br>
+        <span class="hot">natural language</span><br>
+        <span class="hot">pseudocode</span><br>
+        <span class="hot">flowchart</span><br>
+        <span class="hot">code</span><br><br>
+        <span class="warn">representation ≠ decoration</span>
+      </div>
+      <div class="metric-grid">
+        <div class="metric"><b>ясність</b><span>чи зрозуміє інша людина</span></div>
+        <div class="metric"><b>точність</b><span>чи немає двозначності</span></div>
+        <div class="metric"><b>перевірка</b><span>чи видно помилки до коду</span></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="chapter" id="goal">
+    <div class="chapter-head reveal">
+      <div class="num">01</div>
+      <div>
+        <h2>Що ми сьогодні реально тренуємо</h2>
+        <p class="subtitle">
+          Не «малювання блок-схем». Мета — навчитися переводити проблему у формальний,
+          перевірний опис і бачити логіку до того, як вона перетвориться на код.
+        </p>
+      </div>
+    </div>
+
+    <div class="g4 reveal">
+      <div class="card">
+        <span class="label">1</span>
+        <h3>Декомпозиція</h3>
+        <p>Розкласти задачу на вхідні дані, перетворення, умови, повторення та результат.</p>
+      </div>
+      <div class="card">
+        <span class="label">2</span>
+        <h3>Формалізація</h3>
+        <p>Прибрати нечіткі слова й записати дії так, щоб їх можна було однозначно виконати.</p>
+      </div>
+      <div class="card">
+        <span class="label">3</span>
+        <h3>Перевірка</h3>
+        <p>Протрасувати алгоритм вручну та знайти логічні помилки до реалізації.</p>
+      </div>
+      <div class="card">
+        <span class="label">4</span>
+        <h3>Комунікація</h3>
+        <p>Обрати форму запису, яка найкраще пояснює алгоритм конкретній аудиторії.</p>
+      </div>
+    </div>
+
+    <div class="quote reveal">
+      У програмній інженерії алгоритм — це не лише «як порахувати».
+      Це ще й <strong>контракт між постановкою задачі та майбутньою реалізацією</strong>.
+    </div>
+  </section>
+
+  <section class="chapter" id="forms">
+    <div class="chapter-head reveal">
+      <div class="num">02</div>
+      <div>
+        <h2>Чотири форми запису — чотири різні рівні точності</h2>
+        <p class="subtitle">
+          Жодна форма не є «найкращою завжди». Важливо розуміти, що кожна підсвічує,
+          а що приховує.
+        </p>
+      </div>
+    </div>
+
+    <div class="compare reveal">
+      <div class="form-card">
+        <div class="form-icon">📝</div>
+        <span class="label">Природна мова</span>
+        <h3>Швидко пояснює ідею</h3>
+        <p>Зручна для постановки задачі, але небезпечна двозначністю: «повторити кілька разів», «якщо число велике», «взяти кращий варіант».</p>
+        <div class="bestfor"><strong>Найкраще:</strong> початкова постановка, обговорення з не-технічною аудиторією.</div>
+      </div>
+      <div class="form-card">
+        <div class="form-icon">⌨️</div>
+        <span class="label">Псевдокод</span>
+        <h3>Фіксує логіку без синтаксису</h3>
+        <p>Дає точність алгоритму, але не прив’язує мислення до конкретної мови програмування.</p>
+        <div class="bestfor"><strong>Найкраще:</strong> проєктування логіки, рев’ю алгоритму, навчання.</div>
+      </div>
+      <div class="form-card">
+        <div class="form-icon">◇</div>
+        <span class="label">Блок-схема</span>
+        <h3>Показує потік керування</h3>
+        <p>Візуально сильна для умов, розгалужень, циклів і загальної структури алгоритму.</p>
+        <div class="bestfor"><strong>Найкраще:</strong> пояснення flow, складних переходів, навчальні моделі.</div>
+      </div>
+      <div class="form-card">
+        <div class="form-icon">💻</div>
+        <span class="label">Код</span>
+        <h3>Максимально виконуваний опис</h3>
+        <p>Найточніший для машини, але часто найгірший як перший спосіб пояснити задум.</p>
+        <div class="bestfor"><strong>Найкраще:</strong> реалізація, автоматична перевірка, production.</div>
+      </div>
+    </div>
+
+    <div class="interactive reveal" style="margin-top:18px">
+      <h3>Швидкий вибір форми</h3>
+      <p>Вам треба за 2 хвилини пояснити нетехнічному замовнику, як працює процес повернення товару з двома умовами. Що оберете?</p>
+      <div class="choice-row" id="formChoices">
+        <button class="choice" data-answer="0">Код Python</button>
+        <button class="choice" data-answer="1">Коротка блок-схема + 2 речення пояснення</button>
+        <button class="choice" data-answer="0">20 рядків псевдокоду</button>
+        <button class="choice" data-answer="0">UML class diagram</button>
+      </div>
+      <div class="result" id="formResult"></div>
+    </div>
+  </section>
+
+  <section class="chapter" id="build">
+    <div class="chapter-head reveal">
+      <div class="num">03</div>
+      <div>
+        <h2>Від задачі до алгоритму: не починаємо з блок-схеми</h2>
+        <p class="subtitle">
+          Спочатку — модель задачі. Потім — алгоритм. І лише після цього — форма запису.
+          Інакше виходить гарна схема без ясної логіки.
+        </p>
+      </div>
+    </div>
+
+    <div class="g3 reveal">
+      <div class="card">
+        <span class="label">Крок 1</span>
+        <h3>Визначити I/O</h3>
+        <p><strong>Input:</strong> які дані приходять?<br><strong>Output:</strong> що саме має бути результатом?</p>
+      </div>
+      <div class="card">
+        <span class="label">Крок 2</span>
+        <h3>Виявити правила</h3>
+        <p>Формули, обмеження, умови, залежності, винятки, порядок дій.</p>
+      </div>
+      <div class="card">
+        <span class="label">Крок 3</span>
+        <h3>Знайти структури керування</h3>
+        <p>Послідовність, розгалуження, цикл — три базові конструкції, з яких складаються значно складніші алгоритми.</p>
+      </div>
+    </div>
+
+    <div class="callout reveal" style="margin-top:18px">
+      <strong>Приклад задачі:</strong> користувач вводить температуру в °C. Якщо вона нижча за 0 — вивести «мороз»; від 0 до 20 включно — «прохолодно»; вище 20 — «тепло».
+      На цьому етапі вже видно: один input, один output, три діапазони, отже — розгалуження.
+    </div>
+
+    <div class="algorithm-box reveal" style="margin-top:18px">
+      <div class="card">
+        <span class="label">Вправа · порядок дій</span>
+        <h3>Перетягніть кроки у правильну послідовність</h3>
+        <p class="tiny">Задача: знайти максимальне з трьох чисел.</p>
+        <div class="step-list" id="sortableSteps">
+          <div class="step" draggable="true" data-id="2"><span class="badge">?</span>Якщо c &gt; max, присвоїти max = c</div>
+          <div class="step" draggable="true" data-id="0"><span class="badge">?</span>Зчитати a, b, c</div>
+          <div class="step" draggable="true" data-id="3"><span class="badge">?</span>Вивести max</div>
+          <div class="step" draggable="true" data-id="1"><span class="badge">?</span>Присвоїти max = a; якщо b &gt; max, max = b</div>
+        </div>
+        <button class="btn primary" style="margin-top:14px" id="checkOrder">Перевірити</button>
+        <div class="result" id="orderResult"></div>
+      </div>
+
+      <div class="flow">
+        <div class="node start">Початок</div>
+        <div class="arrow">↓</div>
+        <div class="node io"><span>Ввести a, b, c</span></div>
+        <div class="arrow">↓</div>
+        <div class="node process">max = a</div>
+        <div class="arrow">↓</div>
+        <div class="diamond"><span>b &gt; max?</span></div>
+        <div class="arrow">↓</div>
+        <div class="diamond"><span>c &gt; max?</span></div>
+        <div class="arrow">↓</div>
+        <div class="node io"><span>Вивести max</span></div>
+        <div class="arrow">↓</div>
+        <div class="node start">Кінець</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="notation">
+    <div class="chapter-head reveal">
+      <div class="num">04</div>
+      <div>
+        <h2>Блок-схема: форма має передавати семантику</h2>
+        <p class="subtitle">
+          Символи — це не декоративні фігури. Вони кодують тип операції і допомагають читачеві
+          швидко розрізняти введення, обчислення, умови та межі алгоритму.
+        </p>
+      </div>
+    </div>
+
+    <div class="g4 reveal">
+      <div class="card">
+        <div class="node start" style="min-width:0">Start / End</div>
+        <h3 style="margin-top:14px">Термінатор</h3>
+        <p>Початок або завершення алгоритму.</p>
+      </div>
+      <div class="card">
+        <div class="node process" style="min-width:0">x = a + b</div>
+        <h3 style="margin-top:14px">Процес</h3>
+        <p>Обчислення, присвоєння, перетворення.</p>
+      </div>
+      <div class="card">
+        <div class="node io" style="min-width:0"><span>Input / Output</span></div>
+        <h3 style="margin-top:14px">Ввід / вивід</h3>
+        <p>Отримання або відображення даних.</p>
+      </div>
+      <div class="card">
+        <div style="display:grid;place-items:center;height:92px">
+          <div class="diamond" style="width:84px;height:84px"><span>x &gt; 0?</span></div>
+        </div>
+        <h3>Умова</h3>
+        <p>Розгалуження потоку за логічним виразом.</p>
+      </div>
+    </div>
+
+    <div class="quote reveal">
+      Якщо блок-схема стала настільки великою, що її важко читати, проблема може бути не у форматі.
+      Часто це сигнал, що алгоритм варто <strong>декомпозувати на підзадачі</strong>.
+    </div>
+  </section>
+
+  <section class="chapter" id="trace">
+    <div class="chapter-head reveal">
+      <div class="num">05</div>
+      <div>
+        <h2>Трасування: найпростіший спосіб зловити логічну помилку до коду</h2>
+        <p class="subtitle">
+          Трасування — це покрокове виконання алгоритму вручну з фіксацією стану змінних.
+          Воно особливо корисне для умов, циклів і крайових значень.
+        </p>
+      </div>
+    </div>
+
+    <div class="dual reveal">
+      <div class="pseudo">
+<span class="com">// алгоритм</span><br>
+<span class="kw">INPUT</span> <span class="var">n</span><br>
+<span class="var">sum</span> ← 0<br>
+<span class="kw">FOR</span> <span class="var">i</span> ← 1 <span class="kw">TO</span> <span class="var">n</span><br>
+&nbsp;&nbsp;<span class="kw">IF</span> i mod 2 = 0 <span class="kw">THEN</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;sum ← sum + i<br>
+&nbsp;&nbsp;<span class="kw">END IF</span><br>
+<span class="kw">END FOR</span><br>
+<span class="kw">OUTPUT</span> sum
+      </div>
+
+      <div class="card">
+        <span class="label">Вправа · n = 6</span>
+        <h3>Заповніть трасувальну таблицю</h3>
+        <table class="trace-table">
+          <thead><tr><th>i</th><th>парне?</th><th>sum після кроку</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>ні</td><td><input data-answer="0"></td></tr>
+            <tr><td>2</td><td>так</td><td><input data-answer="2"></td></tr>
+            <tr><td>3</td><td>ні</td><td><input data-answer="2"></td></tr>
+            <tr><td>4</td><td>так</td><td><input data-answer="6"></td></tr>
+            <tr><td>5</td><td>ні</td><td><input data-answer="6"></td></tr>
+            <tr><td>6</td><td>так</td><td><input data-answer="12"></td></tr>
+          </tbody>
+        </table>
+        <button class="btn primary" id="checkTrace" style="margin-top:12px">Перевірити трасування</button>
+        <div class="result" id="traceResult"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="practice">
+    <div class="chapter-head reveal">
+      <div class="num">06</div>
+      <div>
+        <h2>Основна практична частина</h2>
+        <p class="subtitle">
+          Тут уже не «подивилися приклад», а самостійно будуємо алгоритм у кількох формах
+          і перевіряємо його на тестових даних.
+        </p>
+      </div>
+    </div>
+
+    <div class="scenario-tabs reveal" id="scenarioTabs">
+      <button class="tab active" data-target="s1">Варіант A · доставка</button>
+      <button class="tab" data-target="s2">Варіант B · оцінка</button>
+      <button class="tab" data-target="s3">Варіант C · знижка</button>
+    </div>
+
+    <div class="scenario active reveal" id="s1">
+      <div class="interactive">
+        <span class="label">Задача A</span>
+        <h3>Розрахунок вартості доставки</h3>
+        <p>
+          Користувач вводить суму замовлення та ознаку «термінова доставка».
+          Якщо сума ≥ 1500 грн — базова доставка безкоштовна, інакше 100 грн.
+          Термінова доставка додає 80 грн незалежно від суми.
+        </p>
+        <div class="callout">
+          <strong>Ваш результат:</strong> 1) словесний алгоритм; 2) псевдокод; 3) блок-схема;
+          4) мінімум 5 тест-кейсів, включно з 1499, 1500 і терміновою доставкою.
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario" id="s2">
+      <div class="interactive">
+        <span class="label">Задача B</span>
+        <h3>Інтерпретація результату тесту</h3>
+        <p>
+          Користувач вводить бал від 0 до 100.
+          90–100 → «відмінно», 74–89 → «добре», 60–73 → «задовільно»,
+          0–59 → «потрібне доопрацювання». Значення поза 0–100 — помилка введення.
+        </p>
+        <div class="callout">
+          <strong>Ваш результат:</strong> 1) словесний алгоритм; 2) псевдокод; 3) блок-схема;
+          4) тест-кейси на всі межі: -1, 0, 59, 60, 73, 74, 89, 90, 100, 101.
+        </div>
+      </div>
+    </div>
+
+    <div class="scenario" id="s3">
+      <div class="interactive">
+        <span class="label">Задача C</span>
+        <h3>Розрахунок знижки</h3>
+        <p>
+          Якщо клієнт має статус Premium — знижка 10%.
+          Якщо не Premium, але сума покупки ≥ 2000 грн — 5%.
+          В інших випадках знижки немає. Потрібно вивести суму знижки та фінальну суму.
+        </p>
+        <div class="callout">
+          <strong>Ваш результат:</strong> 1) словесний алгоритм; 2) псевдокод; 3) блок-схема;
+          4) тест-кейси, що перевіряють пріоритет умов.
+        </div>
+      </div>
+    </div>
+
+    <div class="criteria reveal" style="margin-top:18px">
+      <div class="crit"><strong>Однозначність</strong><span>Кожен крок читається лише одним способом.</span></div>
+      <div class="crit"><strong>Повнота</strong><span>Є всі входи, виходи й гілки.</span></div>
+      <div class="crit"><strong>Межі</strong><span>Перевірені граничні значення.</span></div>
+      <div class="crit"><strong>Завершуваність</strong><span>Алгоритм не «застрягає».</span></div>
+      <div class="crit"><strong>Відтворюваність</strong><span>Інша людина отримає той самий результат.</span></div>
+    </div>
+  </section>
+
+  <section class="chapter" id="review">
+    <div class="chapter-head reveal">
+      <div class="num">07</div>
+      <div>
+        <h2>Peer review: алгоритм має пройти через іншу голову</h2>
+        <p class="subtitle">
+          Хороший тест на якість запису: дайте його людині, яка не бачила постановку,
+          і перевірте, чи зможе вона правильно відтворити логіку.
+        </p>
+      </div>
+    </div>
+
+    <div class="g3 reveal">
+      <div class="card">
+        <span class="label">Перевірка 1</span>
+        <h3>Що неясно?</h3>
+        <p>Позначте місця, де є слова «якщо потрібно», «достатньо», «велике», «кілька», «приблизно» без формального критерію.</p>
+      </div>
+      <div class="card">
+        <span class="label">Перевірка 2</span>
+        <h3>Де межі?</h3>
+        <p>Що відбувається на 0, мінімумі, максимумі, рівно на порозі умови, при некоректному вводі?</p>
+      </div>
+      <div class="card">
+        <span class="label">Перевірка 3</span>
+        <h3>Чи однакові форми?</h3>
+        <p>Псевдокод і блок-схема мають описувати той самий алгоритм. Якщо ні — десь загубилась логіка.</p>
+      </div>
+    </div>
+
+    <div class="quote reveal">
+      Документування — це не написати більше тексту. Це <strong>зменшити кількість здогадок,
+      які мусить зробити наступна людина</strong>.
+    </div>
+  </section>
+
+  <section class="chapter" id="submit">
+    <div class="chapter-head reveal">
+      <div class="num">08</div>
+      <div>
+        <h2>Що має бути у звіті</h2>
+        <p class="subtitle">
+          Структура звіту спеціально проста: оцінюється не «красивий документ»,
+          а логіка, коректність і здатність пояснити своє рішення.
+        </p>
+      </div>
+    </div>
+
+    <div class="checklist reveal" id="checklist">
+      <label class="check"><input type="checkbox"> <span><strong>1. Постановка задачі</strong><br><span class="tiny">Що дано, що потрібно отримати, які є обмеження.</span></span></label>
+      <label class="check"><input type="checkbox"> <span><strong>2. Словесний алгоритм</strong><br><span class="tiny">Коротка послідовність кроків без двозначності.</span></span></label>
+      <label class="check"><input type="checkbox"> <span><strong>3. Псевдокод</strong><br><span class="tiny">Структурований запис із чіткими умовами та змінними.</span></span></label>
+      <label class="check"><input type="checkbox"> <span><strong>4. Блок-схема</strong><br><span class="tiny">Коректні символи, напрямок потоку, підписані гілки.</span></span></label>
+      <label class="check"><input type="checkbox"> <span><strong>5. Тестові дані</strong><br><span class="tiny">Звичайні, граничні та некоректні значення.</span></span></label>
+      <label class="check"><input type="checkbox"> <span><strong>6. Короткий висновок</strong><br><span class="tiny">Яка форма виявилася найзручнішою і де саме.</span></span></label>
+    </div>
+
+    <div class="callout reveal" style="margin-top:18px">
+      <strong>Для захисту:</strong> будьте готові пояснити одну умову, один тест-кейс і одну причину,
+      чому ваша блок-схема саме така. Якщо логіку можна пояснити — її, швидше за все, ви справді розумієте.
+    </div>
+  </section>
+
+  <section class="chapter" id="quiz">
+    <div class="chapter-head reveal">
+      <div class="num">09</div>
+      <div>
+        <h2>Фінальна перевірка</h2>
+        <p class="subtitle">8 запитань на розуміння форм запису алгоритмів і перевірку логіки.</p>
+      </div>
+    </div>
+
+    <div id="quizBox" class="reveal"></div>
+    <button class="btn primary" id="finishQuiz">Порахувати результат</button>
+    <button class="btn" id="resetQuiz">Пройти ще раз</button>
+    <div class="quiz-score" id="quizScore"></div>
+  </section>
+
+  <section class="chapter" id="wrap">
+    <div class="chapter-head reveal">
+      <div class="num">10</div>
+      <div>
+        <h2>Що забрати з лабораторної</h2>
+        <p class="subtitle">Чотири практичні ідеї, які знадобляться далі — і в Python, і в складніших системах.</p>
+      </div>
+    </div>
+
+    <div class="g2 reveal">
+      <div class="card"><p class="takeaway">01. Спочатку формалізуємо задачу, потім малюємо схему або пишемо код.</p></div>
+      <div class="card"><p class="takeaway">02. Форма запису — інструмент комунікації, а не просто вимога до оформлення.</p></div>
+      <div class="card"><p class="takeaway">03. Трасування і граничні значення ловлять логічні помилки раніше за компілятор.</p></div>
+      <div class="card"><p class="takeaway">04. Якщо алгоритм важко пояснити — його, ймовірно, ще недостатньо добре структуровано.</p></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p><strong>Лабораторна робота 1:</strong> «Форми запису алгоритмів».</p>
+    <p>Практичне заняття побудовано на 2 академічні години: коротка теорія → інтерактивні вправи → самостійна задача → peer review → структура звіту → фінальна перевірка.</p>
+  </footer>
+</main>
+
+<script>
+  const progress = document.getElementById('progress');
+  const sections = [...document.querySelectorAll('section[id]')];
+  const navLinks = [...document.querySelectorAll('.nav a')];
+  function updateScroll(){
+    const h = document.documentElement.scrollHeight - innerHeight;
+    progress.style.width = (h ? (scrollY/h)*100 : 0) + '%';
+    let current = sections[0]?.id;
+    sections.forEach(s => { if(scrollY >= s.offsetTop - 120) current = s.id; });
+    navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#'+current));
+  }
+  addEventListener('scroll', updateScroll, {passive:true}); updateScroll();
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+  }, {threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  document.getElementById('focusBtn').addEventListener('click', () => {
+    const bar = document.querySelector('.topbar');
+    bar.style.display = bar.style.display === 'none' ? '' : 'none';
+  });
+
+  let timerId = null, remaining = 600;
+  function renderTimer(){
+    const m = String(Math.floor(remaining/60)).padStart(2,'0');
+    const s = String(remaining%60).padStart(2,'0');
+    document.getElementById('timer').textContent = `${m}:${s}`;
+  }
+  function startTimer(sec){
+    clearInterval(timerId); remaining = sec; renderTimer();
+    timerId = setInterval(() => {
+      remaining--; renderTimer();
+      if(remaining <= 0){
+        clearInterval(timerId);
+        document.getElementById('timer').textContent = 'ГОТОВО';
+      }
+    }, 1000);
+  }
+  function stopTimer(){ clearInterval(timerId); }
+  window.startTimer = startTimer; window.stopTimer = stopTimer;
+
+  function setupChoice(groupId, resultId, success, fail){
+    const group = document.getElementById(groupId);
+    const result = document.getElementById(resultId);
+    group.querySelectorAll('.choice').forEach(btn => btn.addEventListener('click', () => {
+      group.querySelectorAll('.choice').forEach(x => x.classList.remove('selected'));
+      btn.classList.add('selected');
+      const ok = btn.dataset.answer === '1';
+      result.innerHTML = ok ? '✓ ' + success : '↳ ' + fail;
+      result.style.borderColor = ok ? 'rgba(110,231,183,.28)' : 'rgba(251,191,36,.28)';
+      result.style.background = ok ? 'rgba(110,231,183,.08)' : 'rgba(251,191,36,.08)';
+      result.style.color = ok ? '#cbffe9' : '#ffe8a4';
+      result.classList.add('show');
+    }));
+  }
+
+  setupChoice('formChoices','formResult',
+    'Так. Блок-схема швидко показує логіку й умови, а коротке пояснення дає контекст без перевантаження деталями.',
+    'Ця форма або занадто технічна, або не оптимальна для швидкого пояснення процесу нетехнічній аудиторії.');
+
+  // Drag & drop ordering
+  const list = document.getElementById('sortableSteps');
+  let dragging = null;
+  list.querySelectorAll('.step').forEach(step => {
+    step.addEventListener('dragstart', () => { dragging = step; step.classList.add('dragging'); });
+    step.addEventListener('dragend', () => { step.classList.remove('dragging'); dragging = null; });
+  });
+  list.addEventListener('dragover', e => {
+    e.preventDefault();
+    const after = [...list.querySelectorAll('.step:not(.dragging)')].find(el => {
+      const box = el.getBoundingClientRect();
+      return e.clientY < box.top + box.height / 2;
+    });
+    if(after) list.insertBefore(dragging, after); else list.appendChild(dragging);
+  });
+
+  document.getElementById('checkOrder').addEventListener('click', () => {
+    const order = [...list.querySelectorAll('.step')].map(x => +x.dataset.id);
+    const ok = JSON.stringify(order) === JSON.stringify([0,1,2,3]);
+    [...list.querySelectorAll('.step')].forEach((x,i) => x.querySelector('.badge').textContent = i+1);
+    const r = document.getElementById('orderResult');
+    r.innerHTML = ok
+      ? '✓ Правильно. Логіка: input → ініціалізація + перевірка b → перевірка c → output.'
+      : '↳ Ще раз. Підказка: спочатку треба отримати дані, потім мати початкове значення max, після цього порівнювати й лише наприкінці виводити результат.';
+    r.style.background = ok ? 'rgba(110,231,183,.08)' : 'rgba(251,191,36,.08)';
+    r.style.color = ok ? '#cbffe9' : '#ffe8a4';
+    r.classList.add('show');
+  });
+
+  // Trace
+  document.getElementById('checkTrace').addEventListener('click', () => {
+    const inputs = [...document.querySelectorAll('.trace-table input')];
+    let correct = 0;
+    inputs.forEach(inp => {
+      const ok = inp.value.trim() === inp.dataset.answer;
+      if(ok) correct++;
+      inp.style.borderColor = ok ? 'rgba(110,231,183,.65)' : 'rgba(251,113,133,.65)';
+      inp.style.background = ok ? 'rgba(110,231,183,.06)' : 'rgba(251,113,133,.06)';
+    });
+    const r = document.getElementById('traceResult');
+    r.textContent = correct === inputs.length
+      ? '✓ Усе правильно. Фінальна сума парних чисел від 1 до 6 дорівнює 12.'
+      : `Правильно ${correct} з ${inputs.length}. Перевіряйте sum після кожної ітерації, а не лише коли i парне.`;
+    r.classList.add('show');
+  });
+
+  // Scenario tabs
+  document.querySelectorAll('#scenarioTabs .tab').forEach(tab => tab.addEventListener('click', () => {
+    document.querySelectorAll('#scenarioTabs .tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.scenario').forEach(s => s.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.target).classList.add('active');
+  }));
+
+  // Checklist
+  document.querySelectorAll('.check input').forEach(ch => ch.addEventListener('change', () => {
+    ch.closest('.check').classList.toggle('done', ch.checked);
+  }));
+
+  // Quiz
+  const quiz = [
+    {q:'1. Яка форма найкраще відділяє логіку алгоритму від синтаксису конкретної мови?', a:['Код','Псевдокод','Природна мова','Скріншот'], c:1},
+    {q:'2. Що треба зробити до побудови блок-схеми?', a:['Вибрати колір блоків','Формалізувати входи, виходи та правила задачі','Написати CSS','Одразу почати з циклу'], c:1},
+    {q:'3. Для чого найкорисніше трасування?', a:['Для оформлення звіту','Для покрокової перевірки стану алгоритму','Для прискорення CPU','Для вибору IDE'], c:1},
+    {q:'4. Що є граничним тестом для умови x >= 100?', a:['x=40','x=75','x=99, 100, 101','x=1000'], c:2},
+    {q:'5. Що означає ромб у блок-схемі?', a:['Ввід','Процес','Умова / рішення','Кінець'], c:2},
+    {q:'6. Який запис є найменш однозначним?', a:['IF age >= 18 THEN','Повторити кілька разів','sum ← sum + x','INPUT n'], c:1},
+    {q:'7. Коли блок-схема стає занадто великою, найкраща перша реакція…', a:['Зменшити шрифт','Зробити ще більше стрілок','Перевірити, чи алгоритм варто декомпозувати','Переписати все кодом без аналізу'], c:2},
+    {q:'8. Навіщо порівнювати псевдокод і блок-схему одного алгоритму?', a:['Щоб звіт був довшим','Щоб перевірити, чи обидві форми описують ту саму логіку','Щоб вибрати красивішу','Це не має сенсу'], c:1},
+  ];
+  const quizBox = document.getElementById('quizBox');
+
+  function renderQuiz(){
+    quizBox.innerHTML = '';
+    quiz.forEach((item, qi) => {
+      const d = document.createElement('div');
+      d.className = 'quiz-q';
+      d.innerHTML = `<h4>${item.q}</h4>` + item.a.map((o,oi)=>`<button class="opt" data-o="${oi}">${o}</button>`).join('');
+      d.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => {
+        d.querySelectorAll('.opt').forEach(x => x.classList.remove('picked','correct','wrong'));
+        b.classList.add('picked');
+      }));
+      quizBox.appendChild(d);
+    });
+    document.getElementById('quizScore').textContent = '';
+  }
+  renderQuiz();
+
+  document.getElementById('finishQuiz').addEventListener('click', () => {
+    let score = 0, answered = 0;
+    document.querySelectorAll('.quiz-q').forEach((d, qi) => {
+      const picked = d.querySelector('.opt.picked');
+      if(picked){
+        answered++;
+        const val = +picked.dataset.o;
+        if(val === quiz[qi].c){score++; picked.classList.add('correct');}
+        else picked.classList.add('wrong');
+        d.querySelector(`.opt[data-o="${quiz[qi].c}"]`).classList.add('correct');
+      }
+    });
+    const msg = score >= 7 ? 'Сильне розуміння.' :
+                score >= 5 ? 'Добре, але перегляньте трасування та вибір форми.' :
+                'Поверніться до секцій 2–5 і спробуйте ще раз.';
+    document.getElementById('quizScore').textContent = `${score}/8 · відповіли: ${answered}/8 · ${msg}`;
+  });
+  document.getElementById('resetQuiz').addEventListener('click', renderQuiz);
+</script>
+</body>
+</html>
