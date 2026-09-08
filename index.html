@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Основи програмної інженерії — курс</title>
+<meta name="description" content="Головна сторінка курсу «Основи програмної інженерії»: лекції, лабораторні роботи та навігація за темами." />
+<style>
+  :root{
+    --bg:#07111f;
+    --panel:rgba(14,29,49,.74);
+    --line:rgba(155,203,255,.16);
+    --text:#edf6ff;
+    --muted:#9eb4c8;
+    --cyan:#67e8f9;
+    --blue:#60a5fa;
+    --violet:#a78bfa;
+    --green:#6ee7b7;
+    --amber:#fbbf24;
+    --shadow:0 24px 70px rgba(0,0,0,.28);
+    --radius:24px;
+    --max:1180px;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 10% 0%,rgba(96,165,250,.16),transparent 30%),
+      radial-gradient(circle at 92% 10%,rgba(167,139,250,.12),transparent 30%),
+      linear-gradient(180deg,#07111f,#07101d 50%,#091524);
+    line-height:1.6;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;inset:0;pointer-events:none;z-index:-1;
+    background-image:
+      linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+    background-size:42px 42px;
+    mask-image:linear-gradient(to bottom,black,transparent 82%);
+  }
+
+  .progress{
+    position:fixed;top:0;left:0;height:3px;width:0;z-index:9999;
+    background:linear-gradient(90deg,var(--cyan),var(--violet));
+    box-shadow:0 0 16px rgba(103,232,249,.6);
+  }
+
+  .topbar{
+    position:sticky;top:0;z-index:1000;
+    backdrop-filter:blur(14px);
+    background:rgba(5,13,24,.74);
+    border-bottom:1px solid var(--line);
+  }
+
+  .topbar-inner{
+    max-width:var(--max);
+    margin:auto;
+    padding:12px 20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+  }
+
+  .brand{display:flex;align-items:center;gap:10px;font-weight:850}
+  .brand-mark{
+    width:34px;height:34px;border-radius:11px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--cyan),var(--violet));
+    color:#07111f;font-weight:950;
+  }
+
+  .nav{display:flex;gap:8px;flex-wrap:wrap}
+  .nav a{
+    color:var(--muted);text-decoration:none;font-size:.85rem;
+    padding:7px 10px;border-radius:10px;border:1px solid transparent;
+  }
+  .nav a:hover,.nav a.active{
+    color:var(--text);border-color:var(--line);background:rgba(255,255,255,.035);
+  }
+
+  main{max-width:var(--max);margin:auto;padding:0 20px 90px}
+  section{scroll-margin-top:80px}
+
+  .hero{
+    min-height:74vh;
+    display:grid;
+    grid-template-columns:1.15fr .85fr;
+    gap:44px;
+    align-items:center;
+    padding:68px 0 52px;
+  }
+
+  .eyebrow{
+    display:inline-flex;gap:8px;align-items:center;
+    color:var(--cyan);font-weight:850;text-transform:uppercase;
+    letter-spacing:.12em;font-size:.76rem;
+  }
+  .eyebrow::before{content:"";width:24px;height:1px;background:currentColor}
+
+  h1{
+    font-size:clamp(3rem,7vw,6.7rem);
+    line-height:.91;
+    letter-spacing:-.065em;
+    margin:18px 0 22px;
+  }
+  .grad{
+    background:linear-gradient(90deg,var(--cyan),var(--blue) 40%,var(--violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+
+  .lead{
+    max-width:820px;
+    color:#c8d8e7;
+    font-size:clamp(1.04rem,2vw,1.22rem);
+  }
+
+  .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    text-decoration:none;color:var(--text);font-weight:780;
+    padding:11px 15px;border-radius:14px;border:1px solid var(--line);
+    background:rgba(255,255,255,.035);transition:.2s ease;
+  }
+  .btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.07)}
+  .btn.primary{
+    background:linear-gradient(135deg,rgba(103,232,249,.18),rgba(167,139,250,.2));
+    border-color:rgba(103,232,249,.35);
+  }
+
+  .hero-card{
+    border:1px solid var(--line);
+    border-radius:30px;
+    padding:26px;
+    background:linear-gradient(180deg,rgba(18,36,58,.84),rgba(8,20,35,.86));
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-card::after{
+    content:"";
+    position:absolute;
+    width:190px;height:190px;border-radius:50%;
+    right:-70px;top:-90px;
+    background:radial-gradient(circle,rgba(103,232,249,.22),transparent 66%);
+  }
+
+  .kicker{font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .big{
+    font-size:2.2rem;font-weight:950;letter-spacing:-.04em;line-height:1;
+    margin:10px 0 16px;
+  }
+
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-top:16px;
+  }
+  .stat{
+    padding:16px;border-radius:18px;border:1px solid var(--line);
+    background:rgba(255,255,255,.025);
+  }
+  .stat b{display:block;font-size:1.7rem}
+  .stat span{color:var(--muted);font-size:.82rem}
+
+  .chapter{padding:84px 0 18px}
+  .chapter-head{
+    display:grid;
+    grid-template-columns:.3fr 1.7fr;
+    gap:26px;
+    align-items:start;
+    margin-bottom:28px;
+  }
+  .num{
+    font-size:clamp(4rem,8vw,7.2rem);
+    font-weight:950;
+    line-height:.8;
+    letter-spacing:-.08em;
+    color:transparent;
+    -webkit-text-stroke:1px rgba(103,232,249,.45);
+  }
+  h2{
+    font-size:clamp(2rem,4vw,3.65rem);
+    line-height:1.02;
+    letter-spacing:-.045em;
+    margin:0 0 14px;
+  }
+  .subtitle{color:var(--muted);font-size:1.05rem;max-width:820px}
+
+  .course-strip{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:12px;
+  }
+  .course-item{
+    padding:18px;
+    border-radius:18px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.025);
+  }
+  .course-item strong{display:block;font-size:1rem}
+  .course-item span{font-size:.82rem;color:var(--muted)}
+
+  .module-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:34px 0 14px;
+    font-size:1rem;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    font-weight:900;
+    color:#dff8ff;
+  }
+  .module-title::before{
+    content:"";
+    width:24px;height:1px;background:linear-gradient(90deg,var(--cyan),var(--violet));
+  }
+
+  .topic-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+  }
+
+  .topic{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    gap:14px;
+    align-items:center;
+    padding:18px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:var(--panel);
+    transition:.2s ease;
+  }
+  .topic:hover{
+    transform:translateY(-2px);
+    border-color:rgba(103,232,249,.34);
+    background:rgba(18,36,58,.82);
+  }
+
+  .topic-no{
+    width:48px;height:48px;border-radius:15px;
+    display:grid;place-items:center;
+    background:rgba(103,232,249,.08);
+    color:var(--cyan);
+    font-weight:950;
+    border:1px solid rgba(103,232,249,.18);
+  }
+
+  .topic h3{
+    margin:0 0 3px;
+    font-size:1.02rem;
+    line-height:1.25;
+  }
+  .topic p{
+    margin:0;
+    color:var(--muted);
+    font-size:.8rem;
+  }
+
+  .links{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+  }
+  .pill{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-width:82px;
+    padding:7px 10px;
+    border-radius:999px;
+    text-decoration:none;
+    font-size:.78rem;
+    font-weight:850;
+    border:1px solid var(--line);
+  }
+  .lecture{
+    color:#dffaff;
+    background:rgba(103,232,249,.08);
+    border-color:rgba(103,232,249,.22);
+  }
+  .lab{
+    color:#e8ddff;
+    background:rgba(167,139,250,.08);
+    border-color:rgba(167,139,250,.22);
+  }
+  .pill:hover{filter:brightness(1.18)}
+
+  .legend{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:16px;
+    color:var(--muted);
+    font-size:.82rem;
+  }
+
+  .note{
+    margin-top:22px;
+    padding:18px 20px;
+    border-radius:18px;
+    border:1px solid rgba(251,191,36,.24);
+    background:rgba(251,191,36,.07);
+    color:#ffe8a4;
+  }
+
+  .lab-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:14px;
+  }
+  .lab-card{
+    padding:20px;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:linear-gradient(135deg,rgba(167,139,250,.06),rgba(103,232,249,.035));
+  }
+  .lab-card .lab-no{
+    display:inline-block;
+    font-size:.72rem;
+    color:var(--violet);
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    font-weight:900;
+  }
+  .lab-card h3{margin:7px 0 8px;font-size:1.12rem}
+  .lab-card p{margin:0 0 12px;color:var(--muted);font-size:.86rem}
+
+  .footer{
+    margin-top:70px;
+    padding:42px 0 12px;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:.86rem;
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition:.6s ease;
+  }
+  .reveal.visible{opacity:1;transform:none}
+
+  @media(max-width:900px){
+    .hero{grid-template-columns:1fr;min-height:auto;padding-top:54px}
+    .chapter-head{grid-template-columns:1fr}
+    .course-strip{grid-template-columns:1fr 1fr}
+    .topic-grid,.lab-grid{grid-template-columns:1fr}
+  }
+
+  @media(max-width:650px){
+    .nav{display:none}
+    .course-strip{grid-template-columns:1fr}
+    .topic{
+      grid-template-columns:auto 1fr;
+    }
+    .links{
+      grid-column:1/-1;
+      justify-content:flex-start;
+      padding-left:62px;
+    }
+    h1{font-size:3.15rem}
+  }
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-mark">SE</span><span>Основи програмної інженерії</span></div>
+    <nav class="nav">
+      <a href="#about">Про курс</a>
+      <a href="#lectures">Лекції</a>
+      <a href="#labs">Лабораторні</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="top">
+    <div>
+      <div class="eyebrow">Курс · 1 семестр</div>
+      <h1>Основи <span class="grad">програмної інженерії</span></h1>
+      <p class="lead">
+        Курс про те, як переходити від написання окремого коду до створення
+        <strong>керованих, зрозумілих, перевірних і життєздатних програмних систем</strong>.
+        Від базових визначень і SWEBOK — до вимог, проєктування, тестування,
+        супроводу, конфігурації, процесів, інструментів і якості.
+      </p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#lectures">Перейти до тем ↓</a>
+        <a class="btn" href="#labs">Лабораторні роботи</a>
+      </div>
+    </div>
+
+    <aside class="hero-card reveal">
+      <div class="kicker">Структура курсу</div>
+      <div class="big">17 тем · 8 лабораторних</div>
+      <p style="color:#c7d8e8;margin:0">
+        Теорія та практика побудовані як одна траєкторія:
+        спочатку — фундамент програмної інженерії,
+        далі — ключові області знань і практики роботи з програмними системами.
+      </p>
+      <div class="stats">
+        <div class="stat"><b>32 год</b><span>лекційні заняття</span></div>
+        <div class="stat"><b>16 год</b><span>лабораторні заняття</span></div>
+        <div class="stat"><b>120 год</b><span>загальний обсяг курсу</span></div>
+        <div class="stat"><b>4 кредити</b><span>ECTS</span></div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="chapter" id="about">
+    <div class="chapter-head reveal">
+      <div class="num">01</div>
+      <div>
+        <h2>Коротко про курс</h2>
+        <p class="subtitle">
+          Програмна інженерія — це не «ще одна назва програмування».
+          Вона охоплює повний життєвий цикл програмного забезпечення:
+          від формулювання потреби до експлуатації, змін і контролю якості.
+        </p>
+      </div>
+    </div>
+
+    <div class="course-strip reveal">
+      <div class="course-item">
+        <strong>Мислення системами</strong>
+        <span>Не лише код, а вимоги, структура, ризики, взаємодії та еволюція.</span>
+      </div>
+      <div class="course-item">
+        <strong>Практичні рішення</strong>
+        <span>Алгоритми, моделі, тестування, конфігурація та інструменти.</span>
+      </div>
+      <div class="course-item">
+        <strong>Інженерні компроміси</strong>
+        <span>Якість, строки, вартість, підтримуваність і реальні обмеження.</span>
+      </div>
+      <div class="course-item">
+        <strong>Спільна мова</strong>
+        <span>SWEBOK як карта професійної області та її ключових практик.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="chapter" id="lectures">
+    <div class="chapter-head reveal">
+      <div class="num">02</div>
+      <div>
+        <h2>Теми лекцій</h2>
+        <p class="subtitle">
+          Натискайте «Лекція», щоб перейти до сторінки відповідної теми.
+          Для тем, де передбачена лабораторна робота, додано окреме посилання «Лабораторна».
+        </p>
+      </div>
+    </div>
+
+    <div class="module-title reveal">Змістовий модуль 1 · Загальне визначення дисциплін ПІ</div>
+
+    <div class="topic-grid">
+      <article class="topic reveal">
+        <div class="topic-no">01</div>
+        <div>
+          <h3>Основні визначення ПІ</h3>
+          <p>SWEBOK, визначення програмної інженерії, теоретичний базис, методи ПІ.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t1/index.html">Лекція</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">02</div>
+        <div>
+          <h3>ПІ як наукова дисципліна</h3>
+          <p>Мета ПІ, складові дисципліни, програмна система, програмне забезпечення.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t2/index.html">Лекція</a>
+          <a class="pill lab" href="t2/lab.html">Лабораторна</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">03</div>
+        <div>
+          <h3>ПІ як інженерна дисципліна</h3>
+          <p>Інженерний підхід, базові елементи ПІ, інфраструктура проєкту.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t3/index.html">Лекція</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">04</div>
+        <div>
+          <h3>ПІ як виробнича дисципліна</h3>
+          <p>Повторне використання, інженерія застосувань, лінійки продуктів, автоматизація.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t4/index.html">Лекція</a>
+          <a class="pill lab" href="t4/lab.html">Лабораторна</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">05</div>
+        <div>
+          <h3>Дисципліна керування</h3>
+          <p>Базис керування, організаційне керування, планування складних систем.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t5/index.html">Лекція</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">06</div>
+        <div>
+          <h3>Економічна дисципліна</h3>
+          <p>Економіка ПІ, взаємозв’язок вартості, процесу, рішень і результату.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t6/index.html">Лекція</a>
+          <a class="pill lab" href="t6/lab.html">Лабораторна</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="module-title reveal">Змістовий модуль 2 · Області знань з інженерії ПЗ</div>
+
+    <div class="topic-grid">
+      <article class="topic reveal">
+        <div class="topic-no">07</div>
+        <div>
+          <h3>Головні й організаційні області знань SWEBOK</h3>
+          <p>Структура SWEBOK та взаємозв’язок ключових областей знань.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t7/index.html">Лекція</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">08</div>
+        <div>
+          <h3>Інженерія вимог</h3>
+          <p>Класифікація, збір, специфікація, валідація та керування вимогами.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t8/index.html">Лекція</a>
+          <a class="pill lab" href="t8/lab.html">Лабораторна</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">09</div>
+        <div>
+          <h3>Проєктування ПЗ</h3>
+          <p>Архітектура, патерни, об’єктно-орієнтоване проєктування, формальні описи.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t9/index.html">Лекція</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">10</div>
+        <div>
+          <h3>Конструювання ПЗ</h3>
+          <p>Стилі конструювання, стандарти, локалізація складності, планування.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t10/index.html">Лекція</a>
+          <a class="pill lab" href="t10/lab.html">Лабораторна</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">11</div>
+        <div>
+          <h3>Тестування ПЗ</h3>
+          <p>Концепції, рівні, методи, техніки, метрики та керування тестуванням.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t11/index.html">Лекція</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">12</div>
+        <div>
+          <h3>Супровід ПЗ</h3>
+          <p>Еволюція, реінженеринг, реверсна інженерія, рефакторинг.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t12/index.html">Лекція</a>
+          <a class="pill lab" href="t12/lab.html">Лабораторна</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">13</div>
+        <div>
+          <h3>Керування конфігурацією</h3>
+          <p>Версії, базиси, бібліотеки, збірки, аудит і контроль конфігурації.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t13/index.html">Лекція</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">14</div>
+        <div>
+          <h3>Керування інженерією ПЗ</h3>
+          <p>Організаційне керування, проєкти, задачі керування та вимірювання.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t14/index.html">Лекція</a>
+          <a class="pill lab" href="t14/lab.html">Лабораторна</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">15</div>
+        <div>
+          <h3>Базовий процес ПІ</h3>
+          <p>Концепції процесу, інфраструктура, оцінка та якісний аналіз процесів.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t15/index.html">Лекція</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">16</div>
+        <div>
+          <h3>Методи і інструменти ПІ</h3>
+          <p>Формальні методи, прототипування та інструменти підтримки інженерної діяльності.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t16/index.html">Лекція</a>
+          <a class="pill lab" href="t16/lab.html">Лабораторна</a>
+        </div>
+      </article>
+
+      <article class="topic reveal">
+        <div class="topic-no">17</div>
+        <div>
+          <h3>Якість ПЗ</h3>
+          <p>Моделі якості, характеристики, інспекції, валідація, верифікація та вимірювання.</p>
+        </div>
+        <div class="links">
+          <a class="pill lecture" href="t17/index.html">Лекція</a>
+        </div>
+      </article>
+    </div>
+
+    <div class="legend reveal">
+      <span><span class="pill lecture">Лекція</span> → tN/index.html</span>
+      <span><span class="pill lab">Лабораторна</span> → tN/lab.html</span>
+    </div>
+  </section>
+
+  <section class="chapter" id="labs">
+    <div class="chapter-head reveal">
+      <div class="num">03</div>
+      <div>
+        <h2>Лабораторні роботи</h2>
+        <p class="subtitle">
+          Окремий список усіх лабораторних для швидкого доступу.
+          Посилання ведуть у файл <strong>lab.html</strong> відповідної тематичної папки.
+        </p>
+      </div>
+    </div>
+
+    <div class="lab-grid">
+      <article class="lab-card reveal">
+        <span class="lab-no">Лабораторна 1</span>
+        <h3>Форми запису алгоритмів</h3>
+        <p>Словесний опис, псевдокод, блок-схеми, формалізація та трасування.</p>
+        <a class="pill lab" href="t2/lab.html">Відкрити</a>
+      </article>
+
+      <article class="lab-card reveal">
+        <span class="lab-no">Лабораторна 2</span>
+        <h3>Розробка лінійних алгоритмів</h3>
+        <p>Послідовні обчислення, вхідні та вихідні дані, формули й перевірка результату.</p>
+        <a class="pill lab" href="t4/lab.html">Відкрити</a>
+      </article>
+
+      <article class="lab-card reveal">
+        <span class="lab-no">Лабораторна 3</span>
+        <h3>Розробка алгоритмів розгалуження</h3>
+        <p>Умови, альтернативи, вкладені гілки, граничні значення та тест-кейси.</p>
+        <a class="pill lab" href="t6/lab.html">Відкрити</a>
+      </article>
+
+      <article class="lab-card reveal">
+        <span class="lab-no">Лабораторна 4</span>
+        <h3>Розробка циклічних алгоритмів</h3>
+        <p>Повторення, умови завершення, лічильники, накопичення та трасування.</p>
+        <a class="pill lab" href="t8/lab.html">Відкрити</a>
+      </article>
+
+      <article class="lab-card reveal">
+        <span class="lab-no">Лабораторна 5</span>
+        <h3>Засоби розроблення Python-програм</h3>
+        <p>Середовище, запуск, структура програми та базовий цикл розробки.</p>
+        <a class="pill lab" href="t10/lab.html">Відкрити</a>
+      </article>
+
+      <article class="lab-card reveal">
+        <span class="lab-no">Лабораторна 6</span>
+        <h3>Виконання простих обчислень у Python</h3>
+        <p>Змінні, типи, операції, введення/виведення та реалізація лінійних алгоритмів.</p>
+        <a class="pill lab" href="t12/lab.html">Відкрити</a>
+      </article>
+
+      <article class="lab-card reveal">
+        <span class="lab-no">Лабораторна 7</span>
+        <h3>Реалізація алгоритмів розгалуження у Python</h3>
+        <p>if/elif/else, логічні вирази, вкладені умови та перевірка гілок.</p>
+        <a class="pill lab" href="t14/lab.html">Відкрити</a>
+      </article>
+
+      <article class="lab-card reveal">
+        <span class="lab-no">Лабораторна 8</span>
+        <h3>Реалізація циклічних алгоритмів у Python</h3>
+        <p>for, while, керування ітераціями, накопичення та перевірка циклів.</p>
+        <a class="pill lab" href="t16/lab.html">Відкрити</a>
+      </article>
+    </div>
+
+    <div class="note reveal">
+      <strong>Структура файлів:</strong>
+      головна сторінка лежить у корені курсу;
+      кожна тема — у папці <strong>t1, t2, …, t17</strong>;
+      файл лекції — <strong>index.html</strong>;
+      файл лабораторної — <strong>lab.html</strong>.
+    </div>
+  </section>
+
+  <footer class="footer">
+    <p><strong>Основи програмної інженерії</strong> · 121 «Інженерія програмного забезпечення»</p>
+    <p>Головна сторінка курсу: навігація за лекціями та лабораторними роботами.</p>
+  </footer>
+</main>
+
+<script>
+  const progress = document.getElementById('progress');
+  const sections = [...document.querySelectorAll('section[id]')];
+  const navLinks = [...document.querySelectorAll('.nav a')];
+
+  function updateScroll(){
+    const h = document.documentElement.scrollHeight - innerHeight;
+    progress.style.width = (h ? (scrollY/h)*100 : 0) + '%';
+
+    let current = sections[0]?.id;
+    sections.forEach(s => {
+      if(scrollY >= s.offsetTop - 120) current = s.id;
+    });
+
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#'+current);
+    });
+  }
+
+  addEventListener('scroll', updateScroll, {passive:true});
+  updateScroll();
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, {threshold:.08});
+
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+</body>
+</html>
