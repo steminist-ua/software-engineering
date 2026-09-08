@@ -1,0 +1,12 @@
+# GitHub Actions / Pages workflows
+.github/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*.swo
